@@ -1,0 +1,91 @@
+programa ejercicio1p3
+procesos
+  proceso juntarFlores (ES flores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso juntarPapeles (ES papeles: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      papeles:=papeles+1
+  fin
+  proceso depositarFlores (E flores:numero)
+  comenzar
+    repetir flores
+      depositarFlor
+  fin
+  proceso depositarPapeles (E papeles:numero)
+  comenzar
+    repetir papeles
+      depositarPapel
+  fin
+areas
+  area1: AreaPC(1,1,5,10)
+  area2: AreaPC(6,1,10,9)
+robots
+  robot paplero
+  variables
+    p,ca,av,miAv,miCa:numero
+  comenzar
+    p:=0
+    miAv:=PosAv
+    miCa:=PosCa
+    si (miAv<>6)
+      miAv:=miAv+1
+    repetir 3
+      Random(ca,1,10)
+      Random(av,1,5)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      juntarPapeles(p)
+      Pos(miAv,miCa)
+      LiberarEsquina(av,ca)
+    repetir p
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarPapel
+      Pos(miAv,miCa)
+      LiberarEsquina(10,10)
+  fin  
+  robot florero
+  variables
+    f,ca,av,miAv,miCa:numero
+  comenzar
+    f:=0
+    miAv:=PosAv
+    miCa:=PosCa
+    si (miAv<>8)
+      miAv:=miAv+1
+    repetir 3
+      Random(ca,1,10)
+      Random(av,1,5)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      juntarFlores(p)
+      Pos(miAv,miCa)
+      LiberarEsquina(av,ca)
+    repetir p
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarFlor
+      Pos(miAv,miCa)
+      LiberarEsquina(10,10)
+  fin  
+variables
+  robot1:florero
+  robot2:florero
+  robot3:paplero
+  robot5:paplero
+comenzar
+  AsignarArea(robot1,area1)
+  AsignarArea(robot2,area1)
+  AsignarArea(robot3,area2)
+  AsignarArea(robot5,area2)
+  Iniciar(robot1,6,10)
+  Iniciar(robot2,7,10)
+  Iniciar(robot3,8,10)
+  Iniciar(robot5,9,10)
+fin

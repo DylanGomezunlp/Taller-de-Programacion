@@ -1,0 +1,111 @@
+{Para poder avanzar, cada robot debe juntar un 
+papel de una fuente de papeles localizada en la 
+esquina (11,11), colocarlo en la esquina actual 
+de su avenida y avanzar un paso. Cuando la esquina
+ fuente ya no tiene más papeles, o cuando se haya 
+ completado la avenida, deberán 
+avisar al robot coordinador y este determinará el robot que llegó más lejos.}
+programa ejercicio1p2
+procesos
+  proceso juntarUnPapel (ES cantP: numero ES FuenteLLena: boolean)
+  comenzar
+    si HayPapelEnLaEsquina
+      tomarPapel
+      cantP:= cantP+1
+    sino
+      FuenteLLena:= F
+  fin
+  proceso colocarPapel (ES cantP:numero ES cantPasos: numero)
+  comenzar
+    si cantP<>0
+      depositarPapel
+      mover
+      cantPasos:=cantPasos+1
+  fin
+  proceso maximo (E pasos:numero; E id:numero; ES max:numero; ES idmax:numero)
+  comenzar
+    si pasos>max
+      max:=pasos
+      idmax:=id
+  fin
+areas
+  area1: AreaP(4,1,4,100)
+  area2: AreaP(6,1,6,100)
+  area3: AreaP(8,1,8,100)
+  area5: AreaP(10,1,10,100)
+  area6: AreaPC(11,11,11,11)
+  area7: AreaP(20,20,20,20)
+robots
+  robot tipo1
+  variables
+    FuenteLLena:boolean
+    cantPasos,miCa,miAv,id:numero
+    cantP:numero  
+  comenzar
+    RecibirMensaje(id,b1)
+    cantPasos:=0
+    miCa:=PosCa
+    miAv:=PosAv
+    FuenteLLena:=V
+    mientras (FuenteLLena & PosCa<100)
+      cantP:=0
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      juntarUnPapel(cantP,FuenteLLena)
+      Pos(miAv,miCa)
+      LiberarEsquina(11,11)
+      colocarPapel(cantP,cantPasos)
+      miCa:=PosCa
+      miAv:=PosAv
+    EnviarMensaje(id,b1) 
+    EnviarMensaje(cantPasos,b1)
+  fin  
+  robot coordinador
+  variables
+    cantPasos1,cantPasos2,cantPasos3,cantPasos5,id,max,idmax:numero
+  comenzar
+    max:=-1
+    EnviarMensaje(1,a1)
+    EnviarMensaje(2,a2)
+    EnviarMensaje(3,a3)
+    EnviarMensaje(5,a5)
+    repetir 4
+      RecibirMensaje(id,*)
+      si id=1
+        RecibirMensaje(cantPasos1,a1)
+        maximo(cantPasos1,id,max,idmax)
+      sino 
+        si id=2
+          RecibirMensaje(cantPasos2,a2)
+          maximo(cantPasos2,id,max,idmax)
+        sino
+          si id=3
+            RecibirMensaje(cantPasos3,a3)
+            maximo(cantPasos3,id,max,idmax)
+          sino
+            RecibirMensaje(cantPasos5,a5)
+            maximo(cantPasos5,id,max,idmax)
+    Informar(idmax)
+  fin
+variables
+  a1:tipo1
+  a2:tipo1
+  a3:tipo1
+  a5:tipo1
+  b1:coordinador
+comenzar
+  AsignarArea(a1,area1)
+  AsignarArea(a2,area2)
+  AsignarArea(a3,area3)
+  AsignarArea(a5,area5)
+  AsignarArea(a1,area6)
+  AsignarArea(a2,area6)
+  AsignarArea(a3,area6)
+  AsignarArea(a5,area6)
+  AsignarArea(b1,area7)
+  Iniciar(a1,4,1)
+  Iniciar(a2,6,1)
+  Iniciar(a3,8,1)
+  Iniciar(a5,10,1)
+  Iniciar(b1,20,20)
+fin

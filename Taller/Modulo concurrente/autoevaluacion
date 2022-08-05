@@ -1,0 +1,30 @@
+programa DosRobots
+areas
+  ciudad : AreaC(1,1,100,100)
+robots
+  robot robot1
+  comenzar
+    Pos(1,100)
+    si (HayFlorEnLaEsquina)
+      tomarFlor
+    Pos(50,50)
+  fin
+  robot robot2
+  comenzar
+    repetir 99
+      mientras (HayPapelEnLaEsquina)
+        tomarPapel
+      mover
+      mientras (HayPapelEnLaEsquina)
+        tomarPapel
+  fin
+ variables
+  r1 : robot1
+  r2 : robot2
+comenzar
+  AsignarArea(r1,ciudad)
+  AsignarArea(r2,ciudad)
+  Iniciar(r1,2,2)
+  Iniciar(r2,1,1)
+fin
+

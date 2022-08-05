@@ -1,0 +1,84 @@
+programa ejercicioteoria1
+procesos
+  proceso juntarFlores (ES flores: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso depositarFlores (E flores:numero)
+  comenzar
+    repetir flores
+      depositarFlor
+  fin
+  proceso Alto (ES flores: numero; ES cant: numero)
+  comenzar
+    juntarFlores(flores)
+    mover
+    repetir 19
+      juntarFlores(flores)
+      mover
+    cant:= cant + flores
+  fin
+  proceso Ancho (ES flores: numero; ES cant: numero)
+  comenzar
+    derecha
+    juntarFlores(flores)
+    mover
+    repetir 14
+      juntarFlores(flores)
+      mover
+    cant:= cant + flores
+  fin
+
+areas
+  area1: AreaP(15,15,30,35)
+  area2: AreaP(40,40,55,60)
+  area3: AreaPC(10,10,10,10)
+robots
+  robot tipo1
+  variables
+    f,cant:numero
+  comenzar
+    cant:=0
+    repetir 2
+      f:=0
+      Alto(f,cant)
+      f:=0
+      Ancho(f,cant)
+      derecha
+    BloquearEsquina(10,10)
+    Pos (10,10)
+    depositarFlores(cant)
+    Pos(15,15)
+    LiberarEsquina(10,10)
+  fin
+  robot tipo2
+  variables
+    f,cant:numero
+  comenzar
+    f:=0
+    cant:=0
+    repetir 2
+      f:=0
+      Alto(f,cant)
+      f:=0
+      Ancho(f,cant)
+      derecha
+    BloquearEsquina(10,10)
+    Pos (10,10)
+    depositarFlores(cant)
+    Pos(40,40)
+    LiberarEsquina(10,10)
+  fin  
+variables
+  a1:tipo1
+  a2:tipo2 
+comenzar
+  AsignarArea(a1,area1)
+  AsignarArea(a2,area2)
+  AsignarArea(a1,area3)
+  AsignarArea(a2,area3)
+  Iniciar(a1,15,15)
+  Iniciar(a2,40,40)
+fin

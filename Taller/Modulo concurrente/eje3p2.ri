@@ -1,0 +1,69 @@
+programa ejercicio1p2
+procesos
+  proceso juntarFlores (ES flores: numero)
+  comenzar
+    si HayFlorEnLaEsquina
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        flores:=flores+1
+  fin
+  proceso juntarPapeles (ES papeles: numero)
+  comenzar
+    si HayPapelEnLaEsquina
+      mientras HayPapelEnLaEsquina
+        tomarPapel
+        papeles:=papeles+1
+  fin
+  proceso hacerCalle (ES flores: numero; ES papeles:numero; ES cant: numero)
+  comenzar
+    derecha
+    juntarFlores(flores)
+    juntarPapeles(papeles)
+    mover
+    repetir 8
+      juntarFlores(flores)
+      juntarPapeles(papeles)
+      mover
+    cant:= flores+papeles
+    EnviarMensaje(cant,a2)
+  fin
+areas
+  area1: AreaP(1,1,10,1)
+  area2: AreaP(11,1,20,1)
+  {area3: AreaP(12,1,17,50)
+  area5: AreaP(1,1,1,1)}
+robots
+  robot tipo1
+  variables
+    f,p,cant:numero
+    aux:numero
+  comenzar
+    aux:=1
+    f:=0
+    p:=0
+    cant:=0
+    hacerCalle(f,p,cant)
+    EnviarMensaje(aux,a2)
+  fin  
+  robot tipo2
+  variables
+    f,p,cant:numero
+    aux:numero
+  comenzar
+    f:=0
+    p:=0
+    cant:=0
+    RecibirMensaje(aux,a1)
+    hacerCalle(f,p,cant)
+    aux:=aux+cant
+    Informar('total ', aux)
+  fin  
+variables
+  a1:tipo1
+  a2:tipo2 
+comenzar
+  AsignarArea(a1,area1)
+  AsignarArea(a2,area2)
+  Iniciar(a1, 1, 1)
+  Iniciar(a2, 11,1)
+fin

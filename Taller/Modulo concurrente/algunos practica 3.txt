@@ -1,0 +1,359 @@
+2- Realice un programa en el cual 2 robots corren una carrera. El recorrido realizado por cada uno es el que se muestra en la siguiente figura. Durante el recorrido el robot 1 debe juntar todas las flores que encuentre en los vértices de cada escalón, mientras que el robot 2 debe juntar todos los papeles que encuentre en los vértices de cada escalón.
+Al finalizar deben informar la cantidad de elementos recogidos.
+El robot 1 debe iniciar su recorrido en la esquina (1,1) y el robot 2 debe iniciar su recorrido en la esquina (31,1). 
+Al finalizar la carrera, un robot jefe (inicializado en la esquina (15,1) ) debe informar qué robot llegó primero a la esquina central de su recorrido.     
+
+// Fede
+
+programa P3_E2_opcion1
+
+procesos
+
+  proceso izquierda
+  comenzar
+    repetir (3)
+      derecha
+  fin
+
+  proceso juntaFlores (ES flores:numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      flores:= flores + 1
+  fin
+
+  proceso juntarPapeles (ES papeles:numero)
+  comenzar
+    mientras (HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:= papeles + 1
+  fin
+
+  proceso lado (E idR:numero; E longitud:numero; ES elementos:numero)
+  comenzar
+    si (idR = 1)
+      juntaFlores (elementos)
+    sino
+      juntarPapeles (elementos)
+    repetir (longitud)
+      mover
+  fin
+    
+  proceso escalon (E idRob:numero; E long:numero; ES element:numero)
+  comenzar
+    lado (idRob, long, element)
+    si (idRob = 1)
+      derecha
+    sino
+      izquierda
+    lado (idRob, long, element)
+    si (idRob = 1)
+      izquierda
+    sino
+      derecha
+  fin
+
+
+areas
+  zonaR1a: AreaP (1,1,14,30)
+  zonaR1b: AreaP (15,15,15,16)
+  zonaR2: AreaP (17,1,31,30)
+  zonaMedio: AreaPC (16,16,16,16)
+  zonaJ: AreaP (15,1,15,1)
+
+
+robots
+  robot corredor
+  variables
+    id, longEsc, cantE: numero
+  comenzar
+    RecibirMensaje (id, jefe)
+    longEsc:= 5
+    repetir (4)
+      escalon (id, longEsc, cantE)
+      longEsc:= (longEsc - 1)
+    BloquearEsquina (16,16)
+    escalon (id, longEsc, cantE)
+    si (id = 1)
+      izquierda
+    sino
+      derecha
+    mover
+    EnviarMensaje (id, jefe)
+    LiberarEsquina (16,16)
+    repetir (4)
+      longEsc:= (longEsc + 1)
+      escalon (id, longEsc, cantE)
+    si (id = 1)
+      juntaFlores (cantE)
+    sino
+      juntarPapeles (cantE)
+    Informar ('cantidad_elementos', cantE)
+    EnviarMensaje (1, jefe)
+  fin
+
+  robot jefe
+  variables
+    llegoAlMedio, finalizada: numero
+  comenzar
+    EnviarMensaje (1, corredor1)
+    EnviarMensaje (2, corredor2)
+    RecibirMensaje (llegoAlMedio, *)
+    repetir (3)
+      RecibirMensaje (finalizada, *)
+    Informar ('llego_antes_al_medio_robot', llegoAlMedio)
+  fin
+
+
+variables
+  corredor1: corredor
+  corredor2: corredor
+  jefe: jefe
+
+
+comenzar
+  AsignarArea (corredor1, zonaR1a)
+  AsignarArea (corredor1, zonaR1b)
+  AsignarArea (corredor2, zonaR2)
+  AsignarArea (corredor1, zonaMedio)
+  AsignarArea (corredor2, zonaMedio)
+  AsignarArea (jefe, zonaJ)
+
+  Iniciar (corredor1, 1,1)
+  Iniciar (corredor2, 31,1)
+  Iniciar (jefe, 15,1)
+fin
+
+3. Realice un programa donde 4 robots colaboren para recoger todas las 
+flores de una esquina indicada por un robot jefe, seleccionada de manera 
+aleatoria dentro del cuadrante (2,2) y (10,10). Para ello el jefe 
+determina inicialmente una esquina y los robots deben accederla, tomar 
+de a una las flores y volver a su posición inicial. Cuando los robots 
+terminan el jefe deberá informar cuál de ellos logró recoger más flores. 
+Las esquinas de inicio de los robots deberán ser jefe (1,1) y robots 
+(2,1), (3, 1), (4,1) y (5,1). 
+
+//Autor/a
+
+programa uno
+procesos
+  proceso max(E numR:numero; E cant:numero; ES ganador:numero )
+  variables
+    maximos:numero
+  comenzar
+    si(cant>maximos)
+      maximos:=cant
+      ganador:=numR
+  fin
+  proceso JuntarFlores(ES vacio:numero; E AV:numero; E CA:numero; E AuxAv:numero; ES cant:numero)
+  comenzar
+    Pos(AV,CA)
+    si(HayFlorEnLaEsquina)
+      tomarFlor
+      cant:=cant+1
+      vacio:=1
+    sino
+      vacio:=0
+    Pos(AuxAv,1)
+  fin
+  proceso PosInicial
+  comenzar
+    EnviarMensaje(2,robot1)
+    EnviarMensaje(3,robot2)
+    EnviarMensaje(4,robot3)
+    EnviarMensaje(5,robot4)
+  fin
+  proceso EnviarPosRandom
+  variables
+    AV,CA:numero
+  comenzar
+    AV:=2  {prueba de programa en av 2, ca 2}
+    CA:=2
+    EnviarMensaje(AV,robot1)
+    EnviarMensaje(CA,robot1)
+    EnviarMensaje(AV,robot2)
+    EnviarMensaje(CA,robot2)  
+    EnviarMensaje(AV,robot3)
+    EnviarMensaje(CA,robot3)
+    EnviarMensaje(AV,robot4)
+    EnviarMensaje(CA,robot4)     
+  fin
+  proceso NumeroRobot
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(4,robot4)
+  fin
+areas
+  ciudad1:AreaC(1,1,100,100)
+robots
+  robot RobotJefe
+  variables
+    numR,cant,ganador,maximo:numero
+  comenzar
+    NumeroRobot
+    PosInicial
+    EnviarPosRandom
+    maximo:=-1
+    repetir 4
+      RecibirMensaje(numR,*)
+      RecibirMensaje(cant,*)
+      max(numR,cant,ganador)
+    Informar('ROBOT',ganador)
+  fin
+  robot RobotRecolector
+  variables
+    AuxAv:numero
+    AV,CA:numero
+    vacio:numero
+    cant,numR:numero
+  comenzar
+    vacio:=1
+    RecibirMensaje(numR,robotJ)
+    AuxAv := PosAv
+    RecibirMensaje(AV,robotJ)
+    RecibirMensaje(CA,robotJ)
+    mientras(vacio = 1)
+      BloquearEsquina(AV,CA)
+      JuntarFlores(vacio,AV,CA,AuxAv,cant)
+      LiberarEsquina(AV,CA)
+    EnviarMensaje(numR,robotJ)
+    EnviarMensaje(cant,robotJ)
+    Pos(AuxAv,1)
+  fin
+variables
+  robot1:RobotRecolector
+  robot2:RobotRecolector
+  robot3:RobotRecolector
+  robot4:RobotRecolector
+  robotJ:RobotJefe
+comenzar
+  AsignarArea(robotJ,ciudad1)
+  AsignarArea(robot1,ciudad1)
+  AsignarArea(robot2,ciudad1)
+  AsignarArea(robot3,ciudad1)
+  AsignarArea(robot4,ciudad1)
+  Iniciar(robotJ,1,1)
+  Iniciar(robot1,2,1)
+  Iniciar(robot2,3,1)
+  Iniciar(robot3,4,1)
+  Iniciar(robot4,5,1)
+fin
+
+4- Realice un programa en el que 4 robots mueven de a una todas las 
+flores de la esquina (10,10) a la esquina (11,11). Para ello, 
+cada robot que toma una flor de la esquina (10,10) la deposita en la 
+esquina (11,11) y luego retorna a su esquina inicial. Cada robot que 
+finaliza (o, sea, que detecta que la esquina (10,10) se ha vaciado) 
+deberá avisar al robot coordinador que ha finalizado. Cuando todos los 
+robots finalizaron, el robot coordinador deberá informar qué robot 
+finalizó último y a continuación deberá recolectar todas las flores de 
+la esquina (11,11).
+
+El robot coordinador inicia en la esquina (1,1). 
+Los robots inician en las esquinas (9,9) (9,10) (9,11) y (9,12).
+
+//
+
+programa P4_E4a
+
+procesos
+
+  proceso moverFlor (E avI:numero; E caI:numero; ES quedaF:boolean)
+  comenzar
+    BloquearEsquina (10,10)
+    Pos (10,10)
+    si (HayFlorEnLaEsquina)
+      tomarFlor
+    sino
+      quedaF:= F
+    BloquearEsquina (11,11)
+    Pos (11, 11)
+    LiberarEsquina (10,10)
+    si (quedaF)
+      depositarFlor
+    Pos (avI,caI)
+    LiberarEsquina (11,11)
+  fin
+
+  proceso identificarFloreros
+  comenzar
+    EnviarMensaje (1, florero1)
+    EnviarMensaje (2, florero2)
+    EnviarMensaje (3, florero3)
+    EnviarMensaje (4, florero4)
+  fin
+
+areas
+  zonaR1: AreaP (9,9,9,9)
+  zonaR2: AreaP (9,10,9,10)
+  zonaR3: AreaP (9,11,9,11)
+  zonaR4: AreaP (9,12,9,12)
+  zonaFlores: AreaPC (10,10,10,10)
+  zonaDeposito: AreaC (11,11,11,11)
+  zonaJ: AreaP (1,1,1,1)
+
+
+robots
+  robot recolector
+  variables
+    id, avIni, caIni: numero
+    quedanFlores: boolean
+  comenzar
+    avIni:= PosAv
+    caIni:= PosCa
+    RecibirMensaje (id, jefe)
+    quedanFlores:= V
+    mientras (quedanFlores)
+      moverFlor (avIni, caIni, quedanFlores)
+    EnviarMensaje (id, jefe)
+  fin
+
+  robot coordinador
+  variables
+    id, ultimo, flores: numero
+  comenzar
+    identificarFloreros
+    repetir (4)
+      RecibirMensaje (id, *)
+    Informar ('el_robot_queFinalizo_ultimo_es', id)
+    BloquearEsquina (11,11)
+    Pos (11,11)
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+    Pos(1,1)
+    DesbloquearEsquina(11,11)
+  fin
+
+
+variables
+  florero1: recolector
+  florero2: recolector
+  florero3: recolector
+  florero4: recolector
+  jefe: coordinador
+
+
+comenzar
+  AsignarArea (florero1, zonaR1)
+  AsignarArea (florero2, zonaR2)
+  AsignarArea (florero3, zonaR3)
+  AsignarArea (florero4, zonaR4)
+  AsignarArea (florero1, zonaFlores)
+  AsignarArea (florero2, zonaFlores)
+  AsignarArea (florero3, zonaFlores)
+  AsignarArea (florero4, zonaFlores)
+  AsignarArea (florero1, zonaDeposito)
+  AsignarArea (florero2, zonaDeposito)
+  AsignarArea (florero3, zonaDeposito)
+  AsignarArea (florero4, zonaDeposito)
+  AsignarArea (jefe, zonaDeposito)
+  AsignarArea (jefe, zonaJ)
+
+  Iniciar (florero1, 9,9)
+  Iniciar (florero2, 9,10)
+  Iniciar (florero3, 9,11)
+  Iniciar (florero4, 9,12)
+  Iniciar (jefe, 1,1)
+fin
